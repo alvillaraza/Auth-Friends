@@ -1,54 +1,57 @@
-import React, { useState, useContext } from 'react';
-// import { FriendContext } from '../contexts/FriendContext';
+import React, { useState } from 'react';
 import { axiosWithAuth } from '../utils/axiosWithAuth';
 
-// const Form = () => {
-//     const data = useContext(FriendContext);
-//     const [newFriend, setNewFriend] = useState({
-//         id: Date.now(),
-//         name: "",
-//         age: "",
-//         email: "",
-//       });
+const Form = (props) => {
+    console.log('props', props)
+    const [newFriend, setNewFriend] = useState({
+        id: Date.now(),
+        name: "",
+        age: "",
+        email: "",
+      });
 
-class Form extends React.Component {
-    state = {
-        friends: {
-            id: Date.now(),
-            name: '',
-            age: '',
-            email: ''
-        }
-    };
-    
-    handleChange = e => {
-        //this has to be set state, but should we use useState for this?
-        this.setState({
-            ...this.friends,
-            [e.target.name]: e.target.value
-        })
+    const handleChange = e => {
+            setNewFriend({
+                ...newFriend,
+                [e.target.name]: e.target.value
+            });
     };
 
-    handleSubmit = e => {
+    const handleSubmit = e => {
+      
         e.preventDefault();
+        console.log(newFriend);
+        
         axiosWithAuth()
-            .post('/api/friends', this.state.friends)
+        .post("/api/friends", newFriend)
             .then(res => {
-                window.localStorage.setItem('token', res.data.payload);
-            })
+                props.getData();
+        //   window.localStorage.setItem("token", res.data.payload);
+        })
+        .catch (err => console.log(err));
     };
+
+    // const putFriend = (id, updatedFriend) => {
+    //     axiosWithAuth()
+    //       .put(`api/friends/${id}`, updatedFriend)
+    //       .then(res => {
+            
+    //       })
+    //       .catch(err => console.log(err));
+    //   }
+
+      
    
-    render() {
         return (
             <div>
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <p>
                         <input
                             type="text"
                             name="name"
                             placeholder="name"
-                            value={this.state.friends.name}
-                            onChange={this.handleChange}
+                            value={newFriend.name}
+                            onChange={handleChange}
                         />
                     </p>
                 
@@ -57,8 +60,8 @@ class Form extends React.Component {
                             type="text"
                             name="age"
                             placeholder="age"
-                            value={this.state.friends.age}
-                            onChange={this.handleChange}
+                            value={newFriend.age}
+                            onChange={handleChange}
                         />
                     </p>
                 
@@ -67,8 +70,8 @@ class Form extends React.Component {
                             type="email"
                             name="email"
                             placeholder="email"
-                            value={this.state.friends.email}
-                            onChange={this.handleChange}
+                            value={newFriend.email}
+                            onChange={handleChange}
                         />
                     </p>
                     <button>Add Friend</button>
@@ -76,5 +79,5 @@ class Form extends React.Component {
             </div>
         )
     }
-}
+
 export default Form;

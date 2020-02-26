@@ -27,15 +27,11 @@ class Login extends React.Component {
       .then(res => {
         window.localStorage.setItem("token", res.data.payload);
 
-        // *** Not working, this.props is empty ***
         this.props.history.push("/protected");
-
-        console.log("!", this.props);
 
         this.setState({ isFetchingData: false });
       })
       .catch(err => {
-        console.log("!", this);
         console.log(err);
       });
   };

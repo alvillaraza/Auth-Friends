@@ -1,46 +1,46 @@
-import React from "react";
-import Form from "./Form";
-import { axiosWithAuth } from "../utils/axiosWithAuth";
+import React from 'react';
+import { axiosWithAuth } from '../utils/axiosWithAuth'
+import Form from './Form'
 
 class FriendsList extends React.Component {
-  state = {
-    friends: []
+    state = {
+        friends: []
+    };
+
+    componentDidMount() {
+        this.getData();
+    }
+
+    getData = () => {
+        axiosWithAuth()
+          .get("/api/friends")
+          .then(res => {
+            console.log("res.data", res.data);
+    
+            this.setState({friends: res.data});
+          })
+          .catch(err => console.log(err));
   };
+  
 
-  componentDidMount() {
-    this.getData();
-  }
 
-  getData = () => {
-    // const token = window.localStorage.getItem("token");
-    axiosWithAuth()
-      .get("/api/friends")
-      .then(res => {
-        console.log('res', res.data);
+    render() {
+        return (
+            <div>
+            <Form getData={this.getData} />
+                {this.state.friends.map(i => {
+                  return (
+                    <div key={i.name}>
+                      <p>{i.name}</p>
+                      <p>{i.email}</p>
+                      <p>{i.age}</p>
 
-        this.setState({
-            friends: res.data          
-        });
-      })
-      .catch(err => console.log(err));
-  };
-
-  render() {
-    return (
-        <div>
-            {/* need to return list of friends here */}
-            {console.log(this.state.friends)}
-            {this.state.friends.map(i => {
-                return <div>
-                    <p>{i.name}</p>
-                    <p>{i.email}</p>
-                    <p>{i.age}</p>
-                </div>
-            })}
-        <Form />
-      </div>
-    );
-  }
+                    </div>
+                  );
+                })}
+            </div>
+          );
+    }
 }
 
 export default FriendsList;
